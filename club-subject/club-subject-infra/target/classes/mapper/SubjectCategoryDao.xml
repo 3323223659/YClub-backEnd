@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.club.subject.basic.mapper.SubjectCategoryDao">
+
+    <!-- 结果映射 -->
+    <resultMap type="com.club.subject.basic.entity.SubjectCategory" id="SubjectCategoryMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
+        <result property="categoryType" column="category_type" jdbcType="INTEGER"/>
+        <result property="imageUrl" column="image_url" jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 查询单个 -->
+    <select id="queryById" resultMap="SubjectCategoryMap">
+        SELECT
+            id, category_name, category_type, image_url,
+            parent_id, created_by, created_time,
+            update_by, update_time, is_deleted
+        FROM subject_category
+        WHERE id = #{id}
+    </select>
+
+    <!-- 分页查询 -->
+    <select id="queryAllByLimit" resultMap="SubjectCategoryMap">
+        SELECT
+        id, category_name, category_type, image_url,
+        parent_id, created_by, created_time,
+        update_by, update_time, is_deleted
+        FROM subject_category
+        <where>
+            <if test="id != null">AND id = #{id}</if>
+            <if test="categoryName != null and categoryName != ''">
+                AND category_name = #{categoryName}
+            </if>
+            <if test="categoryType != null">AND category_type = #{categoryType}</if>
+            <if test="imageUrl != null and imageUrl != ''">AND image_url = #{imageUrl}</if>
+            <if test="parentId != null">AND parent_id = #{parentId}</if>
+            <if test="createdBy != null and createdBy != ''">AND created_by = #{createdBy}</if>
+            <if test="createdTime != null">AND created_time = #{createdTime}</if>
+            <if test="updateBy != null and updateBy != ''">AND update_by = #{updateBy}</if>
+            <if test="updateTime != null">AND update_time = #{updateTime}</if>
+            <if test="isDeleted != null">AND is_deleted = #{isDeleted}</if>
+        </where>
+        LIMIT #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!-- 计数 -->
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM subject_category
+        <where>
+            <if test="id != null">AND id = #{id}</if>
+            <if test="categoryName != null and categoryName != ''">
+                AND category_name = #{categoryName}
+            </if>
+            <if test="categoryType != null">AND category_type = #{categoryType}</if>
+            <if test="imageUrl != null and imageUrl != ''">AND image_url = #{imageUrl}</if>
+            <if test="parentId != null">AND parent_id = #{parentId}</if>
+            <if test="createdBy != null and createdBy != ''">AND created_by = #{createdBy}</if>
+            <if test="createdTime != null">AND created_time = #{createdTime}</if>
+            <if test="updateBy != null and updateBy != ''">AND update_by = #{updateBy}</if>
+            <if test="updateTime != null">AND update_time = #{updateTime}</if>
+            <if test="isDeleted != null">AND is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+
+    <!-- 新增 -->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO subject_category(
+            category_name, category_type, image_url,
+            parent_id, created_by, created_time,
+            update_by, update_time, is_deleted
+        ) VALUES (
+                     #{categoryName}, #{categoryType}, #{imageUrl},
+                     #{parentId}, #{createdBy}, #{createdTime},
+                     #{updateBy}, #{updateTime}, #{isDeleted}
+                 )
+    </insert>
+
+    <!-- 批量新增 -->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO subject_category(
+        category_name, category_type, image_url,
+        parent_id, created_by, created_time,
+        update_by, update_time, is_deleted
+        ) VALUES
+        <foreach collection="entities" item="entity" separator=",">
+            (
+            #{entity.categoryName}, #{entity.categoryType}, #{entity.imageUrl},
+            #{entity.parentId}, #{entity.createdBy}, #{entity.createdTime},
+            #{entity.updateBy}, #{entity.updateTime}, #{entity.isDeleted}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 批量插入或更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO subject_category(
+        category_name, category_type, image_url,
+        parent_id, created_by, created_time,
+        update_by, update_time, is_deleted
+        ) VALUES
+        <foreach collection="entities" item="entity" separator=",">
+            (
+            #{entity.categoryName}, #{entity.categoryType}, #{entity.imageUrl},
+            #{entity.parentId}, #{entity.createdBy}, #{entity.createdTime},
+            #{entity.updateBy}, #{entity.updateTime}, #{entity.isDeleted}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        category_name = VALUES(category_name),
+        category_type = VALUES(category_type),
+        image_url = VALUES(image_url),
+        parent_id = VALUES(parent_id),
+        created_by = VALUES(created_by),
+        created_time = VALUES(created_time),
+        update_by = VALUES(update_by),
+        update_time = VALUES(update_time),
+        is_deleted = VALUES(is_deleted)
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update">
+        UPDATE subject_category
+        <set>
+            <if test="categoryName != null and categoryName != ''">
+                category_name = #{categoryName},
+            </if>
+            <if test="categoryType != null">category_type = #{categoryType},</if>
+            <if test="imageUrl != null and imageUrl != ''">image_url = #{imageUrl},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="createdBy != null and createdBy != ''">created_by = #{createdBy},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除 -->
+    <delete id="deleteById">
+        DELETE FROM subject_category WHERE id = #{id}
+    </delete>
+
+</mapper>
