@@ -2,11 +2,13 @@ package com.club.subject.application.convert;
 
 import com.club.subject.application.dto.SubjectCategoryDTO;
 import com.club.subject.entity.SubjectCategoryBO;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-28T01:32:22+0800",
+    date = "2025-04-28T20:42:18+0800",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 public class SubjectCategoryDTOConverterImpl implements SubjectCategoryDTOConverter {
@@ -26,5 +28,35 @@ public class SubjectCategoryDTOConverterImpl implements SubjectCategoryDTOConver
         subjectCategoryBO.setParentId( categoryDTO.getParentId() );
 
         return subjectCategoryBO;
+    }
+
+    @Override
+    public List<SubjectCategoryDTO> convertDtoToCategoryBoList(List<SubjectCategoryBO> categoryBOList) {
+        if ( categoryBOList == null ) {
+            return null;
+        }
+
+        List<SubjectCategoryDTO> list = new ArrayList<SubjectCategoryDTO>( categoryBOList.size() );
+        for ( SubjectCategoryBO subjectCategoryBO : categoryBOList ) {
+            list.add( subjectCategoryBOToSubjectCategoryDTO( subjectCategoryBO ) );
+        }
+
+        return list;
+    }
+
+    protected SubjectCategoryDTO subjectCategoryBOToSubjectCategoryDTO(SubjectCategoryBO subjectCategoryBO) {
+        if ( subjectCategoryBO == null ) {
+            return null;
+        }
+
+        SubjectCategoryDTO subjectCategoryDTO = new SubjectCategoryDTO();
+
+        subjectCategoryDTO.setId( subjectCategoryBO.getId() );
+        subjectCategoryDTO.setCategoryName( subjectCategoryBO.getCategoryName() );
+        subjectCategoryDTO.setCategoryType( subjectCategoryBO.getCategoryType() );
+        subjectCategoryDTO.setImageUrl( subjectCategoryBO.getImageUrl() );
+        subjectCategoryDTO.setParentId( subjectCategoryBO.getParentId() );
+
+        return subjectCategoryDTO;
     }
 }

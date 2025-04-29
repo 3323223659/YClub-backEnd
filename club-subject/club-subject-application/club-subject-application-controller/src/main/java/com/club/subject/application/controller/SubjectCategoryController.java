@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,14 +30,14 @@ public class SubjectCategoryController {
     private SubjectCategoryDomainService subjectCategoryDomainService;
 
     @PostMapping("/add")
-    public Result<Boolean> add(@RequestBody SubjectCategoryDTO subjectCategoryDTO){
+    public Result add(@RequestBody SubjectCategoryDTO subjectCategoryDTO){
         try {
             if (log.isInfoEnabled()){
                 log.info("添加刷题分类入参：{}", subjectCategoryDTO);
             }
 
             Preconditions.checkNotNull(subjectCategoryDTO.getCategoryType(),"分类类型不能为空");
-            Preconditions.checkArgument(StringUtils.isEmpty(subjectCategoryDTO.getCategoryName()),"分类名称不能为空");
+            Preconditions.checkArgument(!StringUtils.isBlank(subjectCategoryDTO.getCategoryName()),"分类名称不能为空");
             Preconditions.checkNotNull(subjectCategoryDTO.getParentId(),"父级分类不能为空");
 
             SubjectCategoryBO subjectCategoryBO = SubjectCategoryDTOConverter.INSTANCE.convertDtoToCategoryBo(subjectCategoryDTO);
@@ -44,9 +45,82 @@ public class SubjectCategoryController {
             return Result.ok(true);
         } catch (Exception e) {
             log.error("添加刷题分类异常：{}", e.getMessage(),e);
-            return Result.fail();
+            return Result.fail("新增分类失败：" + e);
         }
 
+    }
+
+    @PostMapping("/queryPrimaryCategory")
+    public Result queryPrimaryCategory(@RequestBody SubjectCategoryDTO subjectCategoryDTO){
+        try {
+            if (log.isInfoEnabled()){
+                log.info("查询岗位大类入参：{}", subjectCategoryDTO);
+            }
+
+            SubjectCategoryBO subjectCategoryBO = SubjectCategoryDTOConverter.INSTANCE.convertDtoToCategoryBo(subjectCategoryDTO);
+            List<SubjectCategoryBO> subjectCategoryBOList  = subjectCategoryDomainService.queryCategory(subjectCategoryBO);
+            List<SubjectCategoryDTO> subjectCategoryDTOList = SubjectCategoryDTOConverter.INSTANCE.convertDtoToCategoryBoList(subjectCategoryBOList);
+            return Result.ok(subjectCategoryDTOList);
+        } catch (Exception e) {
+            log.error("查询岗位大类：{}", e.getMessage(),e);
+            return Result.fail("查询分类失败：" + e);
+        }
+    }
+
+    @PostMapping("/queryCategoryByPrimary")
+    public Result queryCategoryByPrimary(@RequestBody SubjectCategoryDTO subjectCategoryDTO){
+        try {
+            if (log.isInfoEnabled()){
+                log.info("根据岗位大类查询小类入参：{}", subjectCategoryDTO);
+            }
+
+            Preconditions.checkNotNull(subjectCategoryDTO.getParentId(),"岗位大类ID不能为空");
+
+            SubjectCategoryBO subjectCategoryBO = SubjectCategoryDTOConverter.INSTANCE.convertDtoToCategoryBo(subjectCategoryDTO);
+            List<SubjectCategoryBO> subjectCategoryBOList  = subjectCategoryDomainService.queryCategory(subjectCategoryBO);
+
+            List<SubjectCategoryDTO> subjectCategoryDTOList = SubjectCategoryDTOConverter.INSTANCE.convertDtoToCategoryBoList(subjectCategoryBOList);
+            return Result.ok(subjectCategoryDTOList);
+        } catch (Exception e) {
+            log.error("查询岗位大类：{}", e.getMessage(),e);
+            return Result.fail("查询分类失败：" + e);
+        }
+    }
+
+    @PostMapping("/update")
+    public Result update(@RequestBody SubjectCategoryDTO subjectCategoryDTO){
+        try {
+            if (log.isInfoEnabled()){
+                log.info("修改分类入参：{}", subjectCategoryDTO);
+            }
+
+            Preconditions.checkNotNull(subjectCategoryDTO.getId(),"分类ID不能为空");
+
+            SubjectCategoryBO subjectCategoryBO = SubjectCategoryDTOConverter.INSTANCE.convertDtoToCategoryBo(subjectCategoryDTO);
+            Boolean result  = subjectCategoryDomainService.update(subjectCategoryBO);
+            return Result.ok(result);
+        } catch (Exception e) {
+            log.error("修改分类：{}", e.getMessage(),e);
+            return Result.fail("修改分类失败：" + e);
+        }
+    }
+
+    @PostMapping("/delete")
+    public Result delete(@RequestBody SubjectCategoryDTO subjectCategoryDTO){
+        try {
+            if (log.isInfoEnabled()){
+                log.info("删除分类入参：{}", subjectCategoryDTO);
+            }
+
+            Preconditions.checkNotNull(subjectCategoryDTO.getId(),"分类ID不能为空");
+
+            SubjectCategoryBO subjectCategoryBO = SubjectCategoryDTOConverter.INSTANCE.convertDtoToCategoryBo(subjectCategoryDTO);
+            Boolean result  = subjectCategoryDomainService.delete(subjectCategoryBO);
+            return Result.ok(result);
+        } catch (Exception e) {
+            log.error("删除分类：{}", e.getMessage(),e);
+            return Result.fail("删除分类失败：" + e);
+        }
     }
 
 }

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 题目分类(SubjectCategory)表服务实现类
@@ -53,9 +54,8 @@ public class SubjectCategoryServiceImpl implements SubjectCategoryService {
      * @return 实例对象
      */
     @Override
-    public SubjectCategory update(SubjectCategory subjectCategory) {
-        this.subjectCategoryDao.update(subjectCategory);
-        return this.queryById(subjectCategory.getId());
+    public int update(SubjectCategory subjectCategory) {
+        return this.subjectCategoryDao.update(subjectCategory);
     }
 
     /**
@@ -67,5 +67,11 @@ public class SubjectCategoryServiceImpl implements SubjectCategoryService {
     @Override
     public boolean deleteById(Long id) {
         return this.subjectCategoryDao.deleteById(id) > 0;
+    }
+
+    // 查询岗位大类
+    @Override
+    public List<SubjectCategory> queryCategory(SubjectCategory subjectCategory) {
+        return this.subjectCategoryDao.queryCategory(subjectCategory);
     }
 }

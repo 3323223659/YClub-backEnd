@@ -5,6 +5,8 @@ import com.club.subject.entity.SubjectCategoryBO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -19,5 +21,7 @@ public interface SubjectCategoryConverter {
     SubjectCategoryConverter INSTANCE = Mappers.getMapper(SubjectCategoryConverter.class);
 
     SubjectCategory convertBoToCategory(SubjectCategoryBO subjectCategoryBO);
+
+    List<SubjectCategoryBO> convertBoToCategoryList(List<SubjectCategory> subjectCategoryList);
 
 }
