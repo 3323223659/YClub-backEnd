@@ -8,7 +8,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-28T20:42:18+0800",
+    date = "2025-04-29T22:10:52+0800",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 public class SubjectCategoryDTOConverterImpl implements SubjectCategoryDTOConverter {
@@ -31,7 +31,7 @@ public class SubjectCategoryDTOConverterImpl implements SubjectCategoryDTOConver
     }
 
     @Override
-    public List<SubjectCategoryDTO> convertDtoToCategoryBoList(List<SubjectCategoryBO> categoryBOList) {
+    public List<SubjectCategoryDTO> convertBOToCategoryDTOList(List<SubjectCategoryBO> categoryBOList) {
         if ( categoryBOList == null ) {
             return null;
         }

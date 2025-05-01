@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.club.subject.basic.mapper.SubjectInfoDao">
+
+    <resultMap type="com.club.subject.basic.entity.SubjectInfo" id="SubjectInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="subjectName" column="subject_name" jdbcType="VARCHAR"/>
+        <result property="subjectDifficult" column="subject_difficult" jdbcType="INTEGER"/>
+        <result property="settleName" column="settle_name" jdbcType="VARCHAR"/>
+        <result property="subjectType" column="subject_type" jdbcType="INTEGER"/>
+        <result property="subjectScore" column="subject_score" jdbcType="INTEGER"/>
+        <result property="subjectParse" column="subject_parse" jdbcType="VARCHAR"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SubjectInfoMap">
+        select id,
+               subject_name,
+               subject_difficult,
+               settle_name,
+               subject_type,
+               subject_score,
+               subject_parse,
+               created_by,
+               created_time,
+               update_by,
+               update_time,
+               is_deleted
+        from subject_info
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SubjectInfoMap">
+        select
+        id, subject_name, subject_difficult,
+        settle_name, subject_type, subject_score,
+        subject_parse, created_by, created_time,
+        update_by, update_time, is_deleted
+        from subject_info
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="subjectName != null and subjectName != ''">
+                and subject_name = #{subjectName}
+            </if>
+            <if test="subjectDifficult != null">
+                and subject_difficult = #{subjectDifficult}
+            </if>
+            <if test="settleName != null and settleName != ''">
+                and settle_name = #{settleName}
+            </if>
+            <if test="subjectType != null">
+                and subject_type = #{subjectType}
+            </if>
+            <if test="subjectScore != null">
+                and subject_score = #{subjectScore}
+            </if>
+            <if test="subjectParse != null and subjectParse != ''">
+                and subject_parse = #{subjectParse}
+            </if>
+            <if test="createdBy != null and createdBy != ''">
+                and created_by = #{createdBy}
+            </if>
+            <if test="createdTime != null">
+                and created_time = #{createdTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="isDeleted != null">
+                and is_deleted = #{isDeleted}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from subject_info
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="subjectName != null and subjectName != ''">
+                and subject_name = #{subjectName}
+            </if>
+            <if test="subjectDifficult != null">
+                and subject_difficult = #{subjectDifficult}
+            </if>
+            <if test="settleName != null and settleName != ''">
+                and settle_name = #{settleName}
+            </if>
+            <if test="subjectType != null">
+                and subject_type = #{subjectType}
+            </if>
+            <if test="subjectScore != null">
+                and subject_score = #{subjectScore}
+            </if>
+            <if test="subjectParse != null and subjectParse != ''">
+                and subject_parse = #{subjectParse}
+            </if>
+            <if test="createdBy != null and createdBy != ''">
+                and created_by = #{createdBy}
+            </if>
+            <if test="createdTime != null">
+                and created_time = #{createdTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="isDeleted != null">
+                and is_deleted = #{isDeleted}
+            </if>
+        </where>
+    </select>
+
+    <!--    需要做两个表的转-->
+    <select id="countByCondition" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM subject_info a
+        JOIN subject_mapping b ON a.id = b.subject_id  <!-- 必须指定关联条件 -->
+        <where>
+            <if test="subjectInfo.subjectDifficult != null and subjectInfo.subjectDifficult != ''">
+                AND a.subject_difficult = #{subjectInfo.subjectDifficult}  <!-- 修正参数名 -->
+            </if>
+            <if test="categoryId != null and categoryId != ''">
+                AND b.category_id = #{categoryId}
+            </if>
+            <if test="labelId != null and labelId != ''">
+                AND b.label_id = #{labelId}
+            </if>
+            AND a.is_deleted = 0
+            AND b.is_deleted = 0
+        </where>
+    </select>
+
+    <!-- 分页查询题目列表数据 -->
+    <select id="queryPage" resultType="com.club.subject.basic.entity.SubjectInfo">
+        SELECT
+        a.id,
+        a.subject_name,
+        a.subject_difficult,
+        a.settle_name,
+        a.subject_type,
+        a.subject_score,
+        a.subject_parse,
+        a.created_by,
+        a.created_time,
+        a.update_by,
+        a.update_time,
+        a.is_deleted
+        FROM subject_info a
+        JOIN subject_mapping b ON a.id = b.subject_id
+        <where>
+            <if test="subjectInfo.subjectDifficult != null">
+                AND a.subject_difficult = #{subjectInfo.subjectDifficult}
+            </if>
+            <!-- 分类和标签条件 -->
+            <if test="categoryId != null">
+                AND b.category_id = #{categoryId}
+            </if>
+            <if test="labelId != null">
+                AND b.label_id = #{labelId}
+            </if>
+            <!-- 软删除条件 -->
+            AND a.is_deleted = 0
+            AND b.is_deleted = 0
+        </where>
+        LIMIT #{start}, #{pageSize}
+    </select>
+
+    <!-- 插入题目信息 -->
+    <insert id="insert" parameterType="com.club.subject.basic.entity.SubjectInfo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO subject_info(
+        subject_name, subject_difficult,
+        settle_name, subject_type,
+        subject_score, subject_parse,
+        created_by, created_time,
+        update_by, update_time,
+        is_deleted
+        )
+        VALUES (
+        #{subjectName}, #{subjectDifficult},
+        #{settleName}, #{subjectType},
+        #{subjectScore}, #{subjectParse},
+        #{createdBy}, #{createdTime},
+        #{updateBy}, #{updateTime},
+        #{isDeleted}
+        )
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into subject_info(
+        subject_name, subject_difficult,
+        settle_name, subject_type,
+        subject_score, subject_parse,
+        created_by, created_time,
+        update_by, update_time,
+        is_deleted
+        )
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (
+            #{entity.subjectName}, #{entity.subjectDifficult},
+            #{entity.settleName}, #{entity.subjectType},
+            #{entity.subjectScore}, #{entity.subjectParse},
+            #{entity.createdBy}, #{entity.createdTime},
+            #{entity.updateBy}, #{entity.updateTime},
+            #{entity.isDeleted}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into subject_info(
+        subject_name, subject_difficult,
+        settle_name, subject_type,
+        subject_score, subject_parse,
+        created_by, created_time,
+        update_by, update_time,
+        is_deleted
+        )
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (
+            #{entity.subjectName}, #{entity.subjectDifficult},
+            #{entity.settleName}, #{entity.subjectType},
+            #{entity.subjectScore}, #{entity.subjectParse},
+            #{entity.createdBy}, #{entity.createdTime},
+            #{entity.updateBy}, #{entity.updateTime},
+            #{entity.isDeleted}
+            )
+        </foreach>
+        on duplicate key update
+        subject_name = values(subject_name),
+        subject_difficult = values(subject_difficult),
+        settle_name = values(settle_name),
+        subject_type = values(subject_type),
+        subject_score = values(subject_score),
+        subject_parse = values(subject_parse),
+        created_by = values(created_by),
+        created_time = values(created_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        is_deleted = values(is_deleted)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update subject_info
+        <set>
+            <if test="subjectName != null and subjectName != ''">
+                subject_name = #{subjectName},
+            </if>
+            <if test="subjectDifficult != null">
+                subject_difficult = #{subjectDifficult},
+            </if>
+            <if test="settleName != null and settleName != ''">
+                settle_name = #{settleName},
+            </if>
+            <if test="subjectType != null">
+                subject_type = #{subjectType},
+            </if>
+            <if test="subjectScore != null">
+                subject_score = #{subjectScore},
+            </if>
+            <if test="subjectParse != null and subjectParse != ''">
+                subject_parse = #{subjectParse},
+            </if>
+            <if test="createdBy != null and createdBy != ''">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from subject_info
+        where id = #{id}
+    </delete>
+
+</mapper>

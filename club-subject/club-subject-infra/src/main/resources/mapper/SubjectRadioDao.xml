@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.club.subject.basic.mapper.SubjectRadioDao">
+
+    <resultMap type="com.club.subject.basic.entity.SubjectRadio" id="SubjectRadioMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="subjectId" column="subject_id" jdbcType="INTEGER"/>
+        <result property="optionType" column="option_type" jdbcType="INTEGER"/>
+        <result property="optionContent" column="option_content" jdbcType="VARCHAR"/>
+        <result property="isCorrect" column="is_correct" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SubjectRadioMap">
+        SELECT id,
+               subject_id,
+               option_type,
+               option_content,
+               is_correct,
+               created_by,
+               created_time,
+               update_by,
+               update_time,
+               is_deleted
+        FROM subject_radio
+        WHERE id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SubjectRadioMap">
+        SELECT
+        id, subject_id, option_type,
+        option_content, is_correct,
+        created_by, created_time,
+        update_by, update_time, is_deleted
+        FROM subject_radio
+        <where>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="subjectId != null">
+                AND subject_id = #{subjectId}
+            </if>
+            <if test="optionType != null">
+                AND option_type = #{optionType}
+            </if>
+            <if test="optionContent != null and optionContent != ''">
+                AND option_content = #{optionContent}
+            </if>
+            <if test="isCorrect != null">
+                AND is_correct = #{isCorrect}
+            </if>
+            <if test="createdBy != null and createdBy != ''">
+                AND created_by = #{createdBy}
+            </if>
+            <if test="createdTime != null">
+                AND created_time = #{createdTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                AND update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                AND update_time = #{updateTime}
+            </if>
+            <if test="isDeleted != null">
+                AND is_deleted = #{isDeleted}
+            </if>
+        </where>
+        LIMIT #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(1)
+        FROM subject_radio
+        <where>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="subjectId != null">
+                AND subject_id = #{subjectId}
+            </if>
+            <if test="optionType != null">
+                AND option_type = #{optionType}
+            </if>
+            <if test="optionContent != null and optionContent != ''">
+                AND option_content = #{optionContent}
+            </if>
+            <if test="isCorrect != null">
+                AND is_correct = #{isCorrect}
+            </if>
+            <if test="createdBy != null and createdBy != ''">
+                AND created_by = #{createdBy}
+            </if>
+            <if test="createdTime != null">
+                AND created_time = #{createdTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                AND update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                AND update_time = #{updateTime}
+            </if>
+            <if test="isDeleted != null">
+                AND is_deleted = #{isDeleted}
+            </if>
+        </where>
+    </select>
+
+    <!--根据实体作为筛选条件查询-->
+    <select id="queryByCondition" resultType="com.club.subject.basic.entity.SubjectRadio">
+        SELECT
+        id, subject_id, option_type,
+        option_content, is_correct,
+        created_by, created_time,
+        update_by, update_time, is_deleted
+        FROM subject_radio
+        <where>
+            <if test="subjectRadio.id != null">
+                AND id = #{subjectRadio.id}
+            </if>
+            <if test="subjectRadio.subjectId != null">
+                AND subject_id = #{subjectRadio.subjectId}
+            </if>
+            AND is_deleted = 0
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO subject_radio(subject_id, option_type,
+                                  option_content, is_correct,
+                                  created_by, created_time,
+                                  update_by, update_time,
+                                  is_deleted)
+        VALUES (#{subjectId}, #{optionType},
+                #{optionContent}, #{isCorrect},
+                #{createdBy}, #{createdTime},
+                #{updateBy}, #{updateTime},
+                #{isDeleted})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO subject_radio(
+        subject_id, option_type,
+        option_content, is_correct,
+        created_by, created_time,
+        update_by, update_time,
+        is_deleted
+        )
+        VALUES
+        <foreach collection="entities" item="entity" separator=",">
+            (
+            #{entity.subjectId}, #{entity.optionType},
+            #{entity.optionContent}, #{entity.isCorrect},
+            #{entity.createdBy}, #{entity.createdTime},
+            #{entity.updateBy}, #{entity.updateTime},
+            #{entity.isDeleted}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO subject_radio(
+        subject_id, option_type,
+        option_content, is_correct,
+        created_by, created_time,
+        update_by, update_time,
+        is_deleted
+        )
+        VALUES
+        <foreach collection="entities" item="entity" separator=",">
+            (
+            #{entity.subjectId}, #{entity.optionType},
+            #{entity.optionContent}, #{entity.isCorrect},
+            #{entity.createdBy}, #{entity.createdTime},
+            #{entity.updateBy}, #{entity.updateTime},
+            #{entity.isDeleted}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        subject_id = VALUES(subject_id),
+        option_type = VALUES(option_type),
+        option_content = VALUES(option_content),
+        is_correct = VALUES(is_correct),
+        created_by = VALUES(created_by),
+        created_time = VALUES(created_time),
+        update_by = VALUES(update_by),
+        update_time = VALUES(update_time),
+        is_deleted = VALUES(is_deleted)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        UPDATE subject_radio
+        <set>
+            <if test="subjectId != null">
+                subject_id = #{subjectId},
+            </if>
+            <if test="optionType != null">
+                option_type = #{optionType},
+            </if>
+            <if test="optionContent != null and optionContent != ''">
+                option_content = #{optionContent},
+            </if>
+            <if test="isCorrect != null">
+                is_correct = #{isCorrect},
+            </if>
+            <if test="createdBy != null and createdBy != ''">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        DELETE
+        FROM subject_radio
+        WHERE id = #{id}
+    </delete>
+
+</mapper>

@@ -39,12 +39,8 @@ public class SubjectCategoryServiceImpl implements SubjectCategoryService {
      * @return 实例对象
      */
     @Override
-    public SubjectCategory insert(SubjectCategory subjectCategory) {
-        if (log.isInfoEnabled()){
-            log.info("新增题目分类入参：{}",subjectCategory);
-        }
-        this.subjectCategoryDao.insert(subjectCategory);
-        return subjectCategory;
+    public int insert(SubjectCategory subjectCategory) {
+        return this.subjectCategoryDao.insert(subjectCategory);
     }
 
     /**

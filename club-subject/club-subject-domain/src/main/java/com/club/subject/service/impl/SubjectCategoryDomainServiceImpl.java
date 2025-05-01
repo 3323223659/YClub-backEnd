@@ -54,6 +54,9 @@ public class SubjectCategoryDomainServiceImpl implements SubjectCategoryDomainSe
     //更新分类
     @Override
     public Boolean update(SubjectCategoryBO subjectCategoryBO) {
+        if (log.isInfoEnabled()){
+            log.info("更新刷题分类入参：{}", subjectCategoryBO);
+        }
         SubjectCategory subjectCategory = SubjectCategoryConverter.INSTANCE.convertBoToCategory(subjectCategoryBO);
         int result = subjectCategoryService.update(subjectCategory);
         return result > 0;

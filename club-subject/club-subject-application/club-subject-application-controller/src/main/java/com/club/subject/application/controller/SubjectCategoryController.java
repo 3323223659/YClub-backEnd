@@ -59,7 +59,7 @@ public class SubjectCategoryController {
 
             SubjectCategoryBO subjectCategoryBO = SubjectCategoryDTOConverter.INSTANCE.convertDtoToCategoryBo(subjectCategoryDTO);
             List<SubjectCategoryBO> subjectCategoryBOList  = subjectCategoryDomainService.queryCategory(subjectCategoryBO);
-            List<SubjectCategoryDTO> subjectCategoryDTOList = SubjectCategoryDTOConverter.INSTANCE.convertDtoToCategoryBoList(subjectCategoryBOList);
+            List<SubjectCategoryDTO> subjectCategoryDTOList = SubjectCategoryDTOConverter.INSTANCE.convertBOToCategoryDTOList(subjectCategoryBOList);
             return Result.ok(subjectCategoryDTOList);
         } catch (Exception e) {
             log.error("查询岗位大类：{}", e.getMessage(),e);
@@ -79,7 +79,7 @@ public class SubjectCategoryController {
             SubjectCategoryBO subjectCategoryBO = SubjectCategoryDTOConverter.INSTANCE.convertDtoToCategoryBo(subjectCategoryDTO);
             List<SubjectCategoryBO> subjectCategoryBOList  = subjectCategoryDomainService.queryCategory(subjectCategoryBO);
 
-            List<SubjectCategoryDTO> subjectCategoryDTOList = SubjectCategoryDTOConverter.INSTANCE.convertDtoToCategoryBoList(subjectCategoryBOList);
+            List<SubjectCategoryDTO> subjectCategoryDTOList = SubjectCategoryDTOConverter.INSTANCE.convertBOToCategoryDTOList(subjectCategoryBOList);
             return Result.ok(subjectCategoryDTOList);
         } catch (Exception e) {
             log.error("查询岗位大类：{}", e.getMessage(),e);
