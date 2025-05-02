@@ -27,7 +27,16 @@ spring:
           enabled: true
         config:
           enabled: true
-publicKey: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJji6ELZ8miaNb8GQVEJcuYNWIQsToifCQvYc0Y0gEZBrlMUBv6OUr6noWVxJwK/zS5F07Jhgp1WjOf2Rtv200MCAwEAAQ==  #数据库密码加密公钥
+
+#数据库密码加密公钥
+publicKey: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJji6ELZ8miaNb8GQVEJcuYNWIQsToifCQvYc0Y0gEZBrlMUBv6OUr6noWVxJwK/zS5F07Jhgp1WjOf2Rtv200MCAwEAAQ==
+
+# 日志配置
 logging:
   config:
     classpath: log4j2-spring.xml
+
+# mybatis-plus的sql日志（不过yml文件配置sql打印参数要与问号一一对应很难观察,于是专门在infra下配置mybatis的sql打印去打印）
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

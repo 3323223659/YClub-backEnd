@@ -8,7 +8,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-01T17:08:29+0800",
+    date = "2025-05-01T22:26:08+0800",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 public class SubjectMultipleConverterImpl implements SubjectMultipleConverter {
