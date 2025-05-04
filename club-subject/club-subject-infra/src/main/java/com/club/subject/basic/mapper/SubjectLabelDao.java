@@ -28,7 +28,7 @@ public interface SubjectLabelDao {
      * @param subjectLabel 查询条件
      * @return 对象列表
      */
-    List<SubjectLabel> queryAllByLimit(SubjectLabel subjectLabel);
+    List<SubjectLabel> queryByCondition(SubjectLabel subjectLabel);
 
     /**
      * 统计总行数
@@ -82,8 +82,9 @@ public interface SubjectLabelDao {
     /**
      * 根据ids批量查询
      *
-     * @return 影响行数
+     * @return list
      */
     List<SubjectLabel> batQueryByIds(@Param("labelIds")List<Long> labelIds);
+
 }
 

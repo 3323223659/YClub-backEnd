@@ -26,8 +26,10 @@ public class SubjectLabel implements Serializable {
      * 排序
      */
     private Integer sortNum;
-
-    private String categoryId;
+    /**
+     * 分类ID
+     */
+    private Long categoryId;
     /**
      * 创建人
      */
@@ -46,7 +48,6 @@ public class SubjectLabel implements Serializable {
     private Date updateTime;
 
     private Integer isDeleted;
-
 
 }
 

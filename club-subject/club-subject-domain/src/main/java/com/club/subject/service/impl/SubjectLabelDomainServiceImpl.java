@@ -3,8 +3,10 @@ package com.club.subject.service.impl;
 import com.club.subject.basic.entity.SubjectCategory;
 import com.club.subject.basic.entity.SubjectLabel;
 import com.club.subject.basic.entity.SubjectMapping;
+import com.club.subject.basic.service.SubjectCategoryService;
 import com.club.subject.basic.service.SubjectLabelService;
 import com.club.subject.basic.service.SubjectMappingService;
+import com.club.subject.common.enums.CategroyTypeEnum;
 import com.club.subject.common.enums.IsDeletedEnum;
 import com.club.subject.convert.SubjectCategoryConverter;
 import com.club.subject.convert.SubjectLabelConverter;
@@ -38,6 +40,8 @@ public class SubjectLabelDomainServiceImpl implements SubjectLabelDomainService 
     private SubjectLabelService subjectLabelService;
     @Resource
     private SubjectMappingService subjectMappingService;
+    @Resource
+    private SubjectCategoryService subjectCategoryService;
 
     @Override
     public void add(SubjectLabelBO subjectLabelBO) {
@@ -73,8 +77,18 @@ public class SubjectLabelDomainServiceImpl implements SubjectLabelDomainService 
     @Override
     public List<SubjectLabelBO> queryLabelByCategoryId(SubjectLabelBO subjectLabelBO) {
         if (log.isInfoEnabled()){
-            log.info("根据分类查询标签入参：{}", subjectLabelBO);
+            log.info("根据分类id查询标签入参：{}", subjectLabelBO);
         }
+        //如果当前分类为一级分类,则查询所有标签
+        SubjectCategory subjectCategory = subjectCategoryService.queryById(subjectLabelBO.getCategoryId());
+        if (CategroyTypeEnum.PRIMARY.getCode() == subjectCategory.getCategoryType()){
+            SubjectLabel subjectLabel = new SubjectLabel();
+            subjectLabel.setCategoryId(subjectLabelBO.getCategoryId());
+            subjectLabel.setIsDeleted(IsDeletedEnum.UN_DELETED.getCode());
+            List<SubjectLabel> subjectLabelList = subjectLabelService.queryByCondition(subjectLabel);
+            return SubjectLabelConverter.INSTANCE.convertLabelListToBOList(subjectLabelList);
+        }
+        //不是一级标签,查询当前分类下的标签
         Long categoryId = subjectLabelBO.getCategoryId();
         SubjectMapping subjectMapping = new SubjectMapping();
         subjectMapping.setCategoryId(categoryId);
@@ -86,8 +100,8 @@ public class SubjectLabelDomainServiceImpl implements SubjectLabelDomainService 
         List<Long> labelIds = subjectMappingList.stream().map(SubjectMapping::getLabelId).collect(Collectors.toList());
         List<SubjectLabel> subjectLabelList = subjectLabelService.batchQueryByIds(labelIds);
         List<SubjectLabelBO> subjectLabelBOList = new LinkedList<>();
-        for (SubjectLabel subjectLabel : subjectLabelList) {
-            SubjectLabelBO labelBO = SubjectLabelConverter.INSTANCE.convertLabelToBO(subjectLabel);
+        for (SubjectLabel item : subjectLabelList) {
+            SubjectLabelBO labelBO = SubjectLabelConverter.INSTANCE.convertLabelToBO(item);
             labelBO.setCategoryId(categoryId);
             subjectLabelBOList.add(labelBO);
         }

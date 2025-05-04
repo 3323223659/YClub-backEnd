@@ -1,5 +1,6 @@
 package com.club.subject.basic.service;
 
+import com.club.subject.basic.entity.SubjectCategory;
 import com.club.subject.basic.entity.SubjectLabel;
 
 import java.util.List;
@@ -19,14 +20,6 @@ public interface SubjectLabelService {
      * @return 实例对象
      */
     SubjectLabel queryById(Long id);
-
-    /**
-     * 分页查询
-     *
-     * @param subjectLabel 筛选条件
-     * @return 查询结果
-     */
-
 
     /**
      * 新增数据
@@ -54,4 +47,7 @@ public interface SubjectLabelService {
 
     //批量查询
     List<SubjectLabel> batchQueryByIds(List<Long> labelIds);
+
+    //查询分类下所有标签
+    List<SubjectLabel> queryByCondition(SubjectLabel subjectLabel);
 }

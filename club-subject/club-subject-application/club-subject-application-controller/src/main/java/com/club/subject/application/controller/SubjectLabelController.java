@@ -39,6 +39,7 @@ public class SubjectLabelController {
             }
 
             Preconditions.checkNotNull(subjectLabelDTO.getLabelName(),"标签名称不能为空");
+            Preconditions.checkNotNull(subjectLabelDTO.getCategoryId(),"标签的分类ID不能为空");
 
             SubjectLabelBO subjectLabelBO = SubjectLabelDTOConverter.INSTANCE.convertDtoToLabelBo(subjectLabelDTO);
             subjectLabelDomainService.add(subjectLabelBO);
@@ -90,7 +91,7 @@ public class SubjectLabelController {
     public Result queryLabelByCategoryId(@RequestBody SubjectLabelDTO subjectLabelDTO){
         try {
             if (log.isInfoEnabled()){
-                log.info("根据分类查询标签入参：{}", subjectLabelDTO);
+                log.info("根据分类id查询标签入参：{}", subjectLabelDTO);
             }
 
             Preconditions.checkNotNull(subjectLabelDTO.getCategoryId(),"分类ID不能为空");
@@ -100,8 +101,9 @@ public class SubjectLabelController {
             List<SubjectLabelDTO> subjectLabelDTOList = SubjectLabelDTOConverter.INSTANCE.convertBOToLabelBoList(subjectLabelBOList);
             return Result.ok(subjectLabelDTOList);
         } catch (Exception e) {
-            log.error("根据分类查询标签异常：{}", e.getMessage(),e);
-            return Result.fail("根据分类查询标签失败：" + e);
+            log.error("根据分类id查询标签异常：{}", e.getMessage(),e);
+            return Result.fail("根据分类id查询标签失败：" + e);
         }
     }
+
 }

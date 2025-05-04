@@ -2,11 +2,13 @@ package com.club.subject.convert;
 
 import com.club.subject.basic.entity.SubjectLabel;
 import com.club.subject.entity.SubjectLabelBO;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-01T22:26:08+0800",
+    date = "2025-05-05T01:44:13+0800",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
 )
 public class SubjectLabelConverterImpl implements SubjectLabelConverter {
@@ -22,9 +24,7 @@ public class SubjectLabelConverterImpl implements SubjectLabelConverter {
         subjectLabel.setId( subjectLabelBO.getId() );
         subjectLabel.setLabelName( subjectLabelBO.getLabelName() );
         subjectLabel.setSortNum( subjectLabelBO.getSortNum() );
-        if ( subjectLabelBO.getCategoryId() != null ) {
-            subjectLabel.setCategoryId( String.valueOf( subjectLabelBO.getCategoryId() ) );
-        }
+        subjectLabel.setCategoryId( subjectLabelBO.getCategoryId() );
 
         return subjectLabel;
     }
@@ -40,10 +40,22 @@ public class SubjectLabelConverterImpl implements SubjectLabelConverter {
         subjectLabelBO.setId( subjectLabel.getId() );
         subjectLabelBO.setLabelName( subjectLabel.getLabelName() );
         subjectLabelBO.setSortNum( subjectLabel.getSortNum() );
-        if ( subjectLabel.getCategoryId() != null ) {
-            subjectLabelBO.setCategoryId( Long.parseLong( subjectLabel.getCategoryId() ) );
-        }
+        subjectLabelBO.setCategoryId( subjectLabel.getCategoryId() );
 
         return subjectLabelBO;
+    }
+
+    @Override
+    public List<SubjectLabelBO> convertLabelListToBOList(List<SubjectLabel> subjectLabelList) {
+        if ( subjectLabelList == null ) {
+            return null;
+        }
+
+        List<SubjectLabelBO> list = new ArrayList<SubjectLabelBO>( subjectLabelList.size() );
+        for ( SubjectLabel subjectLabel : subjectLabelList ) {
+            list.add( convertLabelToBO( subjectLabel ) );
+        }
+
+        return list;
     }
 }

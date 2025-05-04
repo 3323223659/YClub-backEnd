@@ -24,6 +24,6 @@ public interface SubjectLabelDomainService {
     //删除标签
     Boolean delete(SubjectLabelBO subjectLabelBO);
 
-    //根据分类查询标签
+    //根据分类id查询标签
     List<SubjectLabelBO> queryLabelByCategoryId(SubjectLabelBO subjectLabelBO);
 }

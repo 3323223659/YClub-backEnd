@@ -1,5 +1,6 @@
 package com.club.subject.basic.service.impl;
 
+import com.club.subject.basic.entity.SubjectCategory;
 import com.club.subject.basic.entity.SubjectLabel;
 import com.club.subject.basic.mapper.SubjectLabelDao;
 import com.club.subject.basic.service.SubjectLabelService;
@@ -72,5 +73,15 @@ public class SubjectLabelServiceImpl implements SubjectLabelService {
     @Override
     public List<SubjectLabel> batchQueryByIds(List<Long> labelIds) {
         return this.subjectLabelDao.batQueryByIds(labelIds);
+    }
+
+    /**
+     * 查询分类下所有标签
+     *
+     * @return 是否成功
+     */
+    @Override
+    public List<SubjectLabel> queryByCondition(SubjectLabel subjectLabel) {
+        return this.subjectLabelDao.queryByCondition(subjectLabel);
     }
 }
