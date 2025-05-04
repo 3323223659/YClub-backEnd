@@ -4,12 +4,12 @@ import com.club.subject.application.dto.SubjectAnswerDTO;
 import com.club.subject.entity.SubjectAnswerBO;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.processing.Generated;
+import javax.annotation.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-05T01:08:55+0800",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.11 (Oracle Corporation)"
+    date = "2025-05-05T04:44:03+0800",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 1.8.0_451 (Oracle Corporation)"
 )
 public class SubjectAnswerDTOConverterImpl implements SubjectAnswerDTOConverter {
 

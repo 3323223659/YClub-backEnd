@@ -9,13 +9,24 @@
         <module name="club-subject-starter" />
         <module name="club-subject-api" />
         <module name="club-subject-application-mq" />
-        <module name="club-subject-common" />
         <module name="club-subject-application-job" />
         <module name="club-subject-application-controller" />
         <module name="club-subject-domain" />
+        <module name="club-gateway" />
+        <module name="club-auth" />
         <module name="club-subject-infra" />
+        <module name="club-oss" />
+      </profile>
+      <profile name="Annotation profile for club-subject" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$PROJECT_DIR$/../../../../develop/repository/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
+        </processorPath>
+        <module name="club-subject-common" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="17" />
+    <bytecodeTargetLevel target="8" />
   </component>
 </project>
