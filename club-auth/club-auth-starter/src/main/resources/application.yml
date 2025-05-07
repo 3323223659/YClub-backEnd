@@ -1,0 +1,42 @@
+server:
+  port: 3001
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.101.130/club?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=true
+    username: root
+    password: Ly4rnHwO3qKDHa94Z7aI3ElaXNQNav4uwxiQOI4zYpvBCV2yNAaGMhPHZ8nyYuoVOzeUsTNu7v0Vc+Zh/+NWlA==  #加密的数据库密码
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 20
+      min-idle: 20
+      max-active: 100
+      max-wait: 60000
+      connectionProperties: config.decrypt=true;config.decrypt.key=${publicKey};
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-username: admin
+        login-password: 123456
+      filter:
+        stat:
+          enabled: true
+          slow-sql-millis: 2000
+          log-slow-sql: true
+        wall:
+          enabled: true
+        config:
+          enabled: true
+
+#数据库密码加密公钥
+publicKey: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJji6ELZ8miaNb8GQVEJcuYNWIQsToifCQvYc0Y0gEZBrlMUBv6OUr6noWVxJwK/zS5F07Jhgp1WjOf2Rtv200MCAwEAAQ==
+
+# 日志配置
+logging:
+  config:
+    classpath: log4j2-spring.xml
+
+# mybatis-plus的sql日志（不过yml文件配置sql打印参数要与问号一一对应很难观察,于是专门在infra下配置mybatis的sql打印去打印）
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
