@@ -21,23 +21,14 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/file")
-@RefreshScope //Spring Cloud提供的一个注解，主要用于动态刷新配置
 public class FileController {
 
     @Resource
     private FileService fileService;
-    @Value("${storage.service.type}")
-    private String type;
 
     @RequestMapping("/uploadFile")
     public String getAllBucket() throws Exception {
         return fileService.getAllBucket().toString();
-    }
-
-    @RequestMapping("/testNacos")
-    public String teatNacos() throws Exception {
-        System.out.println(type);
-        return type;
     }
 
 }

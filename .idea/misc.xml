@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/club-oss/pom.xml" />
         <option value="$PROJECT_DIR$/club-auth/pom.xml" />
         <option value="$PROJECT_DIR$/club-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/club-common/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

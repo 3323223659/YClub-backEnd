@@ -1,6 +1,6 @@
 spring:
   application:
-    name: club-oss
+    name: club-gateway
   profiles:
     active: dev
   cloud:
