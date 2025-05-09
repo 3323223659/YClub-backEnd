@@ -31,7 +31,7 @@ import java.util.List;
  * @Description: 题目模块
  */
 @RestController
-@RequestMapping("/subject/subject")
+@RequestMapping("/subject")
 @Slf4j
 public class SubjectController {
 
