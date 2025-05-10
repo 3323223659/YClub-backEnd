@@ -46,19 +46,19 @@
 
         <dependency>
             <groupId>com.club</groupId>
-            <artifactId>club-subject-infra</artifactId>
+            <artifactId>club-auth-infra</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.club</groupId>
-            <artifactId>club-subject-domain</artifactId>
+            <artifactId>club-auth-domain</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.club</groupId>
-            <artifactId>club-subject-common</artifactId>
+            <artifactId>club-auth-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

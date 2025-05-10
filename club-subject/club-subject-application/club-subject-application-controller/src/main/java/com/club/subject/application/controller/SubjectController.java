@@ -2,15 +2,11 @@ package com.club.subject.application.controller;
 
 import com.club.subject.application.convert.SubjectAnswerDTOConverter;
 import com.club.subject.application.convert.SubjectInfoDTOConverter;
-import com.club.subject.application.convert.SubjectLabelDTOConverter;
 import com.club.subject.application.dto.SubjectInfoDTO;
-import com.club.subject.application.dto.SubjectLabelDTO;
-import com.club.subject.basic.service.SubjectInfoService;
 import com.club.subject.common.entity.PageResult;
 import com.club.subject.common.entity.Result;
 import com.club.subject.entity.SubjectAnswerBO;
 import com.club.subject.entity.SubjectInfoBO;
-import com.club.subject.entity.SubjectLabelBO;
 import com.club.subject.service.SubjectInfoDomainService;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
