@@ -51,6 +51,57 @@ public class AuthUserController {
         }
     }
 
+    @PostMapping("/update")
+    public Result update(@RequestBody AuthUserDTO authUserDTO){
+        try {
+            if (log.isInfoEnabled()){
+                log.info("修改用户信息入参：{}", authUserDTO);
+            }
+
+            Preconditions.checkNotNull(authUserDTO.getUserName(),"用户名不能为空");
+            Preconditions.checkNotNull(authUserDTO.getPassword(),"密码不能为空");
+            Preconditions.checkNotNull(authUserDTO.getEmail(),"邮箱不能为空");
+
+            AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.convertDtoToAnswerBo(authUserDTO);
+            return Result.ok(authUserDomainService.update(authUserBO));
+        }catch (Exception e) {
+            log.error("修改用户信息异常：{}", e.getMessage(),e);
+            return Result.fail("修改用户信息失败：" + e);
+        }
+    }
+
+    @PostMapping("/changeStatus")
+    public Result changeStatus(@RequestBody AuthUserDTO authUserDTO){
+        try {
+            if (log.isInfoEnabled()){
+                log.info("启用或禁用用户入参：{}", authUserDTO);
+            }
+
+            Preconditions.checkNotNull(authUserDTO.getStatus(),"修改的用户状态不能为空");
+
+            AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.convertDtoToAnswerBo(authUserDTO);
+            return Result.ok(authUserDomainService.update(authUserBO));
+        }catch (Exception e) {
+            log.error("启用或禁用用户异常：{}", e.getMessage(),e);
+            return Result.fail("启用或禁用用户失败：" + e);
+        }
+    }
+
+    @PostMapping("/delete")
+    public Result delete(@RequestBody AuthUserDTO authUserDTO){
+        try {
+            if (log.isInfoEnabled()){
+                log.info("删除用户入参：{}", authUserDTO);
+            }
+
+            AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.convertDtoToAnswerBo(authUserDTO);
+            return Result.ok(authUserDomainService.delete(authUserBO));
+        }catch (Exception e) {
+            log.error("删除用户异常：{}", e.getMessage(),e);
+            return Result.fail("删除用户失败：" + e);
+        }
+    }
+
     // 测试登录，浏览器访问： http://localhost:3001/user/doLogin?username=zhang&password=123456
     @RequestMapping("doLogin")
     public SaResult doLogin(String username, String password) {

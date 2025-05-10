@@ -13,4 +13,7 @@ public interface AuthUserDomainService {
 
     Boolean add(AuthUserBO authUserBO);
 
+    Boolean update(AuthUserBO authUserBO);
+
+    Boolean delete(AuthUserBO authUserBO);
 }
