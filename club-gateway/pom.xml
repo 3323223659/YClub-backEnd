@@ -21,6 +21,12 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.34</version>
+        </dependency>
+
         <!-- Nacos配置中心Starter: 提供Nacos配置管理功能 -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -49,6 +55,32 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+
+        <!-- Sa-Token 权限认证（Reactor响应式集成）, 在线文档：https://sa-token.cc -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-reactor-spring-boot-starter</artifactId>
+            <version>1.42.0</version>
+        </dependency>
+
+        <!-- Sa-Token 整合 Redis （使用 jackson 序列化方式） -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redis-jackson</artifactId>
+            <version>1.42.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+
+        <!--Gson 依赖配置用于 Java 对象和 JSON 数据之间的相互转换 -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.9</version>
         </dependency>
 
     </dependencies>
