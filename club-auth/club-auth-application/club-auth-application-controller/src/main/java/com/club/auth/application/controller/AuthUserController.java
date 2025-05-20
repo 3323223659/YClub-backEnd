@@ -27,7 +27,7 @@ import javax.annotation.Resource;
 
 @Slf4j
 @RestController
-@RequestMapping("/user/")
+@RequestMapping("/user")
 public class AuthUserController {
 
     @Resource
@@ -43,7 +43,7 @@ public class AuthUserController {
             Preconditions.checkNotNull(authUserDTO.getPassword(),"密码不能为空");
             Preconditions.checkNotNull(authUserDTO.getEmail(),"邮箱不能为空");
 
-            AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.convertDtoToAnswerBo(authUserDTO);
+            AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.convertDtoToAuthUserBo(authUserDTO);
             return Result.ok(authUserDomainService.add(authUserBO));
         }catch (Exception e) {
             log.error("注册用户异常：{}", e.getMessage(),e);
@@ -62,7 +62,7 @@ public class AuthUserController {
             Preconditions.checkNotNull(authUserDTO.getPassword(),"密码不能为空");
             Preconditions.checkNotNull(authUserDTO.getEmail(),"邮箱不能为空");
 
-            AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.convertDtoToAnswerBo(authUserDTO);
+            AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.convertDtoToAuthUserBo(authUserDTO);
             return Result.ok(authUserDomainService.update(authUserBO));
         }catch (Exception e) {
             log.error("修改用户信息异常：{}", e.getMessage(),e);
@@ -79,7 +79,7 @@ public class AuthUserController {
 
             Preconditions.checkNotNull(authUserDTO.getStatus(),"修改的用户状态不能为空");
 
-            AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.convertDtoToAnswerBo(authUserDTO);
+            AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.convertDtoToAuthUserBo(authUserDTO);
             return Result.ok(authUserDomainService.update(authUserBO));
         }catch (Exception e) {
             log.error("启用或禁用用户异常：{}", e.getMessage(),e);
@@ -94,7 +94,7 @@ public class AuthUserController {
                 log.info("删除用户入参：{}", authUserDTO);
             }
 
-            AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.convertDtoToAnswerBo(authUserDTO);
+            AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.convertDtoToAuthUserBo(authUserDTO);
             return Result.ok(authUserDomainService.delete(authUserBO));
         }catch (Exception e) {
             log.error("删除用户异常：{}", e.getMessage(),e);
@@ -107,7 +107,7 @@ public class AuthUserController {
     public SaResult doLogin(String username, String password) {
         // 此处仅作模拟示例，真实项目需要从数据库中查询数据进行比对
         if("zhang".equals(username) && "123456".equals(password)) {
-            StpUtil.login(10001);
+            StpUtil.login("鸡翅");
             SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
             // 第3步，返回给前端
             return SaResult.data(tokenInfo);

@@ -1,6 +1,8 @@
 package com.club.auth.application.convent;
 
+import com.club.auth.application.dto.AuthRoleDTO;
 import com.club.auth.application.dto.AuthUserDTO;
+import com.club.auth.domain.entity.AuthRoleBO;
 import com.club.auth.domain.entity.AuthUserBO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -16,9 +18,10 @@ import java.util.List;
  */
 
 @Mapper
-public interface AuthUserDTOConverter {
+public interface AuthRoleDTOConverter {
 
-    AuthUserDTOConverter INSTANCE = Mappers.getMapper(AuthUserDTOConverter.class);
+    AuthRoleDTOConverter INSTANCE = Mappers.getMapper(AuthRoleDTOConverter.class);
 
-    AuthUserBO convertDtoToAuthUserBo(AuthUserDTO authUserDTO);
+    AuthRoleBO convertDtoToAuthRoleBo(AuthRoleDTO authRoleDTO);
+
 }

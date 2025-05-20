@@ -1,13 +1,20 @@
 package com.club.gateway.auth;
 
 import cn.dev33.satoken.stp.StpInterface;
+import com.alibaba.cloud.commons.lang.StringUtils;
+import com.club.gateway.auth.entity.AuthPermission;
+import com.club.gateway.auth.entity.AuthRole;
 import com.club.gateway.auth.redis.RedisUtil;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 自定义权限验证接口扩展 
@@ -37,14 +44,27 @@ public class StpInterfaceImpl implements StpInterface {
     }
 
     private List<String> getAuthList(String loginId, String prefix) {
+        //从redis获取数据
         String authKey = redisUtil.buildKey(prefix, loginId.toString());
         String authValue = redisUtil.get(authKey);
-        if (authValue != null) {
+        if (StringUtils.isBlank(authValue)) {
             return Collections.emptyList();
         }
-        // 从redis获取数据并且转为list
-        List<String> permissionList = new Gson().fromJson(authValue, List.class);
-        return permissionList;
+
+        List<String> authList = new LinkedList<>();
+
+        // 将数据转为对象list
+        if (authRolePrefix.equals(prefix)){
+            // 将JSON字符串反序列化为AuthRole对象列表
+            List<AuthRole> roleList = new Gson().fromJson(authValue, new TypeToken<List<AuthRole>>() {}.getType());
+            authList = roleList.stream().map(AuthRole::getRoleKey).collect(Collectors.toList());
+        }else if (authPrefixPermission.equals(prefix)){
+            // 将JSON字符串反序列化为AuthPermission对象列表
+            List<AuthPermission> roleList = new Gson().fromJson(authValue, new TypeToken<List<AuthPermission>>() {}.getType());
+            authList = roleList.stream().map(AuthPermission::getPermissionKey).collect(Collectors.toList());
+        }
+
+        return authList;
     }
 
 }

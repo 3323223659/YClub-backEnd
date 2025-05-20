@@ -3,17 +3,24 @@ package com.club.auth.domain.service.impl;
 import cn.dev33.satoken.secure.SaSecureUtil;
 import com.club.auth.common.enums.AuthUserStatusEnum;
 import com.club.auth.common.enums.IsDeletedEnum;
+import com.club.auth.domain.constant.AuthConstant;
 import com.club.auth.domain.convert.AuthUserConverter;
 import com.club.auth.domain.entity.AuthUserBO;
 import com.club.auth.domain.service.AuthUserDomainService;
-import com.club.auth.infra.basic.entity.AuthUser;
-import com.club.auth.infra.basic.service.AuthUserService;
+import com.club.auth.infra.basic.entity.*;
+import com.club.auth.domain.redis.RedisUtil;
+import com.club.auth.infra.basic.service.*;
+import com.google.gson.Gson;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,19 +36,29 @@ public class AuthUserDomainServiceImpl implements AuthUserDomainService {
 
     @Resource
     private AuthUserService authUserService;
+    @Resource
+    private AuthRoleService authRoleService;
+    @Resource
+    private AuthUserRoleService authUserRoleService;
+    @Resource
+    private AuthPermissionService authPermissionService;
+    @Resource
+    private AuthRolePermissionService  authRolePermissionService;
+    @Resource
+    private RedisUtil redisUtil;
     private String salt = "yang";
+    private String authPrefixPermission = "auth.permission";
+    private String authRolePrefix = "auth.role";
 
     @Override
     @SneakyThrows
+    @Transactional(rollbackFor = Exception.class) //开启事务
     public Boolean add(AuthUserBO authUserBO) {
-        if (log.isInfoEnabled()){
-            log.info("注册用户入参：{}", authUserBO);
-        }
         AuthUser authUser = AuthUserConverter.INSTANCE.convertBOToEntity(authUserBO);
 
         //这是非对称加密需要公钥加密私钥解密,数据库密码字段需要长一点
 //        HashMap<String, String> keyMap = SaSecureUtil.rsaGenerateKeyPair();
-//        String privateKey = keyMap.get("private");
+//        String privateKey = keyMap.get("private");club
 //        String publicKey = keyMap.get("public");
 //        authUser.setPassword(SaSecureUtil.rsaEncryptByPublic(publicKey,authUser.getPassword()));
 //        String secret = SaSecureUtil.rsaEncryptByPrivate(privateKey, authUser.getPassword());
@@ -53,16 +70,40 @@ public class AuthUserDomainServiceImpl implements AuthUserDomainService {
         authUser.setIsDeleted(IsDeletedEnum.UN_DELETED.getCode());
         authUser.setStatus(AuthUserStatusEnum.OPEN.getCode());
         Integer count = authUserService.insert(authUser);
-        //建立一个初始的角色关联
-        //把当前用户的角色与权限写入redis中
+
+        //建立一个初始的角色用户关联
+        AuthRole authRole = new AuthRole();
+        authRole.setRoleKey(AuthConstant.NORMAL_USER);
+        authRole.setIsDeleted(IsDeletedEnum.UN_DELETED.getCode());
+        AuthRole authRoleCondition = authRoleService.queryByCondition(authRole);
+        AuthUserRole authUserRole = new AuthUserRole();
+        authUserRole.setUserId(authUser.getId());
+        authUserRole.setRoleId(authRoleCondition.getId());
+        authUserRole.setIsDeleted(IsDeletedEnum.UN_DELETED.getCode());
+        authUserRoleService.insert(authUserRole);
+
+        //把当前用户的角色写入redis中
+        String roleKey = redisUtil.buildKey(authRolePrefix, authUser.getUserName());
+        List<AuthRole> authRoleList = new LinkedList<>();
+        authRoleList.add(authRole);
+        redisUtil.set(roleKey, new Gson().toJson(authRoleList));
+
+        //查询当前用户的角色id列表
+        AuthRolePermission authRolePermission = new AuthRolePermission();
+        authRolePermission.setRoleId(authUserRole.getRoleId());
+        List<AuthRolePermission> authRolePermissionList = authRolePermissionService.queryByCondition(authRolePermission);
+        List<Long> permissionIdList = authRolePermissionList.stream().map(AuthRolePermission::getRoleId).collect(Collectors.toList());
+
+        //根据权限id列表查询权限信息并放入redis
+        List<AuthPermission> permissionList = authPermissionService.queryByPermissionIdList(permissionIdList);
+        String permissionKey = redisUtil.buildKey(authPrefixPermission, authUser.getUserName());
+        redisUtil.set(permissionKey, new Gson().toJson(permissionList));
+
         return count > 0;
     }
 
     @Override
     public Boolean update(AuthUserBO authUserBO) {
-        if (log.isInfoEnabled()){
-            log.info("修改用户信息入参：{}", authUserBO);
-        }
         AuthUser authUser = AuthUserConverter.INSTANCE.convertBOToEntity(authUserBO);
         authUser.setIsDeleted(IsDeletedEnum.UN_DELETED.getCode());
         Integer count = authUserService.update(authUser);
@@ -72,9 +113,6 @@ public class AuthUserDomainServiceImpl implements AuthUserDomainService {
 
     @Override
     public Boolean delete(AuthUserBO authUserBO) {
-        if (log.isInfoEnabled()){
-            log.info("修改用户信息入参：{}", authUserBO);
-        }
         AuthUser authUser = new AuthUser();
         authUser.setId(authUserBO.getId());
         authUser.setIsDeleted(IsDeletedEnum.DELETED.getCode());

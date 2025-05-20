@@ -1,6 +1,8 @@
 package com.club.auth.domain.convert;
 
+import com.club.auth.domain.entity.AuthRoleBO;
 import com.club.auth.domain.entity.AuthUserBO;
+import com.club.auth.infra.basic.entity.AuthRole;
 import com.club.auth.infra.basic.entity.AuthUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -16,12 +18,12 @@ import java.util.List;
  */
 
 @Mapper
-public interface AuthUserConverter {
+public interface AuthRoleConverter {
 
-    AuthUserConverter INSTANCE = Mappers.getMapper(AuthUserConverter.class);
+    AuthRoleConverter INSTANCE = Mappers.getMapper(AuthRoleConverter.class);
 
-    AuthUser convertBOToEntity(AuthUserBO authUserBO);
+    AuthRole convertBOToEntity(AuthRoleBO authRoleBO);
 
-    AuthUserBO convertEntityToBO(AuthUser authUser);
+    AuthRoleBO convertEntityToBO(AuthRole authRole);
 
 }
