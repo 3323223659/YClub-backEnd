@@ -1,0 +1,10 @@
+D:\code\JAVA\club\club\club-oss\src\main\java\com\club\oss\controller\FileController.java
+D:\code\JAVA\club\club\club-oss\src\main\java\com\club\oss\adapter\MinioStorageAdapter.java
+D:\code\JAVA\club\club\club-oss\src\main\java\com\club\oss\entity\FileInfo.java
+D:\code\JAVA\club\club\club-oss\src\main\java\com\club\oss\adapter\StorageAdapter.java
+D:\code\JAVA\club\club\club-oss\src\main\java\com\club\oss\config\MinioConfig.java
+D:\code\JAVA\club\club\club-oss\src\main\java\com\club\oss\service\FileService.java
+D:\code\JAVA\club\club\club-oss\src\main\java\com\club\oss\adapter\AliyunStorageAdapter.java
+D:\code\JAVA\club\club\club-oss\src\main\java\com\club\oss\OssApplication.java
+D:\code\JAVA\club\club\club-oss\src\main\java\com\club\oss\utils\MinioUtil.java
+D:\code\JAVA\club\club\club-oss\src\main\java\com\club\oss\config\StorageConfig.java
