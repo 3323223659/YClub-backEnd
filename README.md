@@ -4,7 +4,7 @@
 club项目，程序员社区
 
 #### 软件架构
-软件架构说明
+SpringBoot+SpringCloud Alibaba+SSM+Mysql+Redis+Nacos+Gateway+Minio
 
 
 #### 安装教程
