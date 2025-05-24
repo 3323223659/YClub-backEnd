@@ -1,10 +1,14 @@
 package com.club.wx.controller;
 
+import com.club.wx.handler.WxChatMsgFactory;
+import com.club.wx.handler.WxChatMsgHandler;
 import com.club.wx.utils.MessageUtil;
 import com.club.wx.utils.SHA1;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -20,6 +24,9 @@ import java.util.Map;
 public class CallBackController {
 
     private static final String TOKEN = "yangClub";
+
+    @Resource
+    private WxChatMsgFactory wxChatMsgFactory;
 
     /**
     * @Description: 回调消息校验
@@ -45,6 +52,23 @@ public class CallBackController {
     * @Author: yang
     * @Date: 2025/5/20
     */
+
+    /**
+     * 关注类型消息
+     * <FromUserName><![CDATA[oLZ247fuxv-2U5UjiERn5Rx5Tw3k]]></FromUserName>
+     * <CreateTime>1747742897</CreateTime>
+     * <MsgType><![CDATA[event]]></MsgType>
+     * <Event><![CDATA[subscribe]]></Event>
+     * <EventKey><![CDATA[]]></EventKey>
+     * </xml>
+     *  发送消息类型消息
+     *<FromUserName><![CDATA[oLZ247fuxv-2U5UjiERn5Rx5Tw3k]]></FromUserName>
+     * <CreateTime>1747742943</CreateTime>
+     * <MsgType><![CDATA[text]]></MsgType>
+     * <Content><![CDATA[hello]]></Content>
+     * <MsgId>25021663330846087</MsgId>
+     * </xml>
+    */
     @PostMapping(value = "callback", produces = "application/xml;charset=UTF-8")
     public String callback(
             @RequestBody String requestBody,
@@ -54,17 +78,26 @@ public class CallBackController {
             @RequestParam(value = "msg_signature", required = false) String msgSignature) {
         log.info("接收到微信消息：requestBody：{}", requestBody);
         Map<String, String> messageMap = MessageUtil.parseXml(requestBody);
-        String fromUserName = messageMap.get("FromUserName");
-        String toUserName = messageMap.get("ToUserName");
-        String content = "<xml>\n" +
-                "  <ToUserName><![CDATA["+fromUserName+"]]></ToUserName>\n" +
-                "  <FromUserName><![CDATA["+toUserName+"]]></FromUserName>\n" +
-                "  <CreateTime>12345678</CreateTime>\n" +
-                "  <MsgType><![CDATA[text]]></MsgType>\n" +
-                "  <Content><![CDATA[你好,欢迎关注YClub社区！]]></Content>\n" +
-                "</xml>";
-        return content;
+        String msgType = messageMap.get("MsgType");
+        String event = messageMap.get("Event") == null ? "" : messageMap.get("Event");
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(msgType);
+        if (!StringUtils.isEmpty(event)){
+            stringBuilder.append(".").append(event);
+        }
+        String msgTypeKey = stringBuilder.toString();
+        log.info("消息类型：{}", msgTypeKey);
+        WxChatMsgHandler wxChatMsgHandler = wxChatMsgFactory.getWxChatMsgHandler(msgTypeKey);
+        // 可能发过来的信息没有对应的处理类，如图片信息
+        if (wxChatMsgHandler == null) {
+            return "unknown";
+        }
+        String replyContent = wxChatMsgHandler.dealMsg(messageMap);
+        log.info("处理结果：{}", replyContent);
+        return replyContent;
     }
+
 
 
 }

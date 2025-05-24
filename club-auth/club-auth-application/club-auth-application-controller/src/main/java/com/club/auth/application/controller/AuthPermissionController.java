@@ -55,6 +55,22 @@ public class AuthPermissionController {
         }
     }
 
+    @PostMapping("/getPermission")
+    public Result getPermission(String username){
+        try {
+            if (log.isInfoEnabled()){
+                log.info("查询用户权限信息入参：{}", username);
+            }
+
+            Preconditions.checkNotNull(username,"用户名不能为空");
+
+            return Result.ok(authPermissionDomainService.getPermission(username));
+        }catch (Exception e) {
+            log.error("查询用户权限信息异常：{}", e.getMessage(),e);
+            return Result.fail("查询用户权限信息失败：" + e);
+        }
+    }
+
     @PostMapping("/update")
     public Result update(@RequestBody AuthPermissionDTO authPermissionDTO){
         try {

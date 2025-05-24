@@ -65,9 +65,25 @@ public class SubjectCategoryServiceImpl implements SubjectCategoryService {
         return this.subjectCategoryDao.deleteById(id) > 0;
     }
 
-    // 查询岗位大类
+    /**
+     * 查询岗位
+     *
+     * @param subjectCategory 查询条件
+     * @return 分类列表
+     */
     @Override
     public List<SubjectCategory> queryCategory(SubjectCategory subjectCategory) {
         return this.subjectCategoryDao.queryCategory(subjectCategory);
+    }
+
+    /**
+     * 查询岗位数量
+     *
+     * @param id 岗位id
+     * @return 数量
+     */
+    @Override
+    public Integer querySubjectCount(Long id) {
+        return this.subjectCategoryDao.querySubjectCount(id);
     }
 }

@@ -1,6 +1,7 @@
 package com.club.oss.utils;
 import com.club.oss.entity.FileInfo;
 import io.minio.*;
+import io.minio.http.Method;
 import io.minio.messages.Bucket;
 import io.minio.messages.Item;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,10 @@ import javax.annotation.Resource;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -110,18 +114,20 @@ public class MinioUtil {
     /**
      * 下载文件
      */
-    public InputStream downloadFile(String bucket, String objectName) throws Exception {
+    public String downloadFile(String bucket, String objectName) throws Exception {
         if (bucket == null || bucket.isEmpty()) {
             throw new IllegalArgumentException("桶不能为空");
         }
         if (objectName == null || objectName.isEmpty()) {
             throw new IllegalArgumentException("文件名不能为空");
         }
-        GetObjectArgs getObjectArgs = GetObjectArgs.builder()
-                .bucket(bucket)
-                .object(objectName)
-                .build();
-        return minioClient.getObject(getObjectArgs);
+
+        LocalDate today = LocalDate.now();
+        String datePath = String.format("/%d/%02d/%02d/",
+                today.getYear(), today.getMonthValue(), today.getDayOfMonth());
+
+        // 组合最终的对象路径: 年/月/日/文件名
+        return "/" + bucket + datePath + objectName;
     }
 
     /**
@@ -134,10 +140,17 @@ public class MinioUtil {
         if (objectName == null || objectName.isEmpty()) {
             throw new IllegalArgumentException("文件名不能为空");
         }
+        LocalDate today = LocalDate.now();
+        String datePath = String.format("/%d/%02d/%02d/",
+                today.getYear(), today.getMonthValue(), today.getDayOfMonth());
+
+        // 组合最终的对象路径: 年/月/日/文件名
+        String fullObjectName = datePath + objectName;
+
         minioClient.removeObject(
                 RemoveObjectArgs.builder()
                         .bucket(bucket)
-                        .object(objectName)
+                        .object(fullObjectName)
                         .build()
         );
     }
@@ -155,4 +168,25 @@ public class MinioUtil {
                         .build()
         );
     }
+
+    /**
+     * 获取文件url
+     */
+    public String getPreviewFileUrl(String bucketName, String objectName) throws Exception{
+        // 1. 构建预签名URL参数（带预览参数）
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("response-content-type", "image/jpeg");
+        queryParams.put("response-content-disposition", "inline");
+
+        GetPresignedObjectUrlArgs args = GetPresignedObjectUrlArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .method(Method.GET)
+                .extraQueryParams(queryParams)
+                .build();
+
+        // 2. 生成URL并验证
+        return minioClient.getPresignedObjectUrl(args);
+    }
+
 }

@@ -10,10 +10,7 @@ import com.club.auth.domain.entity.AuthUserBO;
 import com.club.auth.domain.service.AuthUserDomainService;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -48,6 +45,24 @@ public class AuthUserController {
         }catch (Exception e) {
             log.error("注册用户异常：{}", e.getMessage(),e);
             return Result.fail("注册用户失败：" + e);
+        }
+    }
+
+    @PostMapping("/getUserInfo")
+    public Result getUserInfo(@RequestBody AuthUserDTO authUserDTO){
+        try {
+            if (log.isInfoEnabled()){
+                log.info("获取用户信息入参：{}", authUserDTO);
+            }
+
+            Preconditions.checkNotNull(authUserDTO.getUserName(),"用户名不能为空");
+
+            AuthUserBO authUserBO = AuthUserDTOConverter.INSTANCE.convertDtoToAuthUserBo(authUserDTO);
+            AuthUserBO userInfo = authUserDomainService.getUserInfo(authUserBO);
+            return Result.ok(AuthUserDTOConverter.INSTANCE.convertBoToAuthUserDto(userInfo));
+        }catch (Exception e) {
+            log.error("获取用户信息异常：{}", e.getMessage(),e);
+            return Result.fail("获取用户信息失败：" + e);
         }
     }
 
@@ -104,15 +119,28 @@ public class AuthUserController {
 
     // 测试登录，浏览器访问： http://localhost:3001/user/doLogin?username=zhang&password=123456
     @RequestMapping("doLogin")
-    public SaResult doLogin(String username, String password) {
-        // 此处仅作模拟示例，真实项目需要从数据库中查询数据进行比对
-        if("zhang".equals(username) && "123456".equals(password)) {
-            StpUtil.login("鸡翅");
-            SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
-            // 第3步，返回给前端
-            return SaResult.data(tokenInfo);
+    public Result doLogin(String validCode) {
+        try {
+            Preconditions.checkNotNull(validCode,"验证码不能为空");
+            return Result.ok(authUserDomainService.doLogin(validCode));
+        }catch (Exception e){
+            log.error("登录异常：{}", e.getMessage(),e);
+            return Result.fail("登录失败：");
         }
-        return SaResult.error("登录失败");
+    }
+
+    @PostMapping("/logOut")
+    public Result logOut(@RequestParam String username){
+        try {
+            log.info("登出用户入参：{}", username);
+            Preconditions.checkNotNull(username,"用户名不能为空");
+
+            StpUtil.logout(username);
+            return Result.ok();
+        }catch (Exception e) {
+            log.error("登出用户异常：{}", e.getMessage(),e);
+            return Result.fail("登出用户失败：" + e);
+        }
     }
 
     // 查询登录状态，浏览器访问： http://localhost:3001/user/isLogin

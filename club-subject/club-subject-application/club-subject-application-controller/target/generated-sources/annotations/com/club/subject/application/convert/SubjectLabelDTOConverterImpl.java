@@ -8,7 +8,7 @@ import javax.annotation.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-09T14:45:11+0800",
+    date = "2025-05-24T19:23:14+0800",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 1.8.0_451 (Oracle Corporation)"
 )
 public class SubjectLabelDTOConverterImpl implements SubjectLabelDTOConverter {
@@ -37,6 +37,20 @@ public class SubjectLabelDTOConverterImpl implements SubjectLabelDTOConverter {
 
         List<SubjectLabelDTO> list = new ArrayList<SubjectLabelDTO>( subjectLabelBOList.size() );
         for ( SubjectLabelBO subjectLabelBO : subjectLabelBOList ) {
+            list.add( subjectLabelBOToSubjectLabelDTO( subjectLabelBO ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<SubjectLabelDTO> convertBOToLabelDTOList(List<SubjectLabelBO> labelBOList) {
+        if ( labelBOList == null ) {
+            return null;
+        }
+
+        List<SubjectLabelDTO> list = new ArrayList<SubjectLabelDTO>( labelBOList.size() );
+        for ( SubjectLabelBO subjectLabelBO : labelBOList ) {
             list.add( subjectLabelBOToSubjectLabelDTO( subjectLabelBO ) );
         }
 

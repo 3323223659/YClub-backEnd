@@ -25,6 +25,13 @@ public interface StorageAdapter {
     public void createBucket(String bucket);
 
     /**
+     * 获取文件路径
+     *
+     * @return
+     */
+    public String getUrl(String bucketName, String objectName);
+
+    /**
      * 上传文件
      *
      * @param bucket      存储桶名称
@@ -47,7 +54,7 @@ public interface StorageAdapter {
     /**
      * 下载文件
      */
-    public InputStream downloadFile(String bucket, String objectName);
+    public String downloadFile(String bucket, String objectName);
 
     /**
      * 删除文件

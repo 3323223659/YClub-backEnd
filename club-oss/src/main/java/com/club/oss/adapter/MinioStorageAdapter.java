@@ -4,10 +4,12 @@ import com.club.oss.entity.FileInfo;
 import com.club.oss.adapter.StorageAdapter;
 import com.club.oss.utils.MinioUtil;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -24,6 +26,10 @@ public class MinioStorageAdapter implements StorageAdapter {
     @Resource
     private MinioUtil minioUtil;
 
+    @Value("${minio.url}")
+    private String url;
+
+
     @Override
     @SneakyThrows
     public void createBucket(String bucket) {
@@ -32,12 +38,25 @@ public class MinioStorageAdapter implements StorageAdapter {
 
     @Override
     @SneakyThrows
+    public String getUrl(String bucketName, String objectName) {
+//        LocalDate today = LocalDate.now();
+//        String datePath = String.format("/%d/%02d/%02d/",
+//                today.getYear(), today.getMonthValue(), today.getDayOfMonth());
+//
+//        // 组合最终的对象路径: 年/月/日/文件名
+//        String fullObjectName = datePath + objectName;
+//        return url + "/" + bucketName + fullObjectName;
+        return minioUtil.getPreviewFileUrl(bucketName, objectName);
+    }
+
+    @Override
+    @SneakyThrows
     public void uploadFile(String bucket, String objectName, MultipartFile file) {
         minioUtil.createBucket(bucket);
         if (objectName == null || objectName.isEmpty()) {
-            minioUtil.uploadFile(bucket, file.getName(), file.getInputStream());
+            minioUtil.uploadFile(bucket, file.getOriginalFilename(), file.getInputStream());
         }else {
-            minioUtil.uploadFile(bucket, objectName+ '/' +file.getName(), file.getInputStream());
+            minioUtil.uploadFile(bucket, objectName+ '/' +file.getOriginalFilename(), file.getInputStream());
         }
 
     }
@@ -56,8 +75,8 @@ public class MinioStorageAdapter implements StorageAdapter {
 
     @Override
     @SneakyThrows
-    public InputStream downloadFile(String bucket, String objectName) {
-        return minioUtil.downloadFile(bucket, objectName);
+    public String downloadFile(String bucket, String objectName) {
+         return url + minioUtil.downloadFile(bucket, objectName);
     }
 
     @Override

@@ -50,4 +50,10 @@ public interface SubjectCategoryService {
      * @return
      */
     List<SubjectCategory> queryCategory(SubjectCategory subjectCategory);
+
+    /**
+     * 查询岗位大类下的岗位数量
+     * @return
+     */
+    Integer querySubjectCount(Long id);
 }

@@ -89,6 +89,14 @@
         </where>
     </select>
 
+    <select id="querySubjectCount" resultType="java.lang.Integer">
+        SELECT COUNT(distinct subject_id)
+        FROM subject_mapping a,
+             subject_label b
+        WHERE a.label_id = b.id
+          AND b.category_id = #{id}
+    </select>
+
     <!-- 新增 -->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         INSERT INTO subject_category(

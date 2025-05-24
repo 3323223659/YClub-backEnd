@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.io.InputStream;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,9 +28,24 @@ public class FileController {
     @Resource
     private FileService fileService;
 
-    @RequestMapping("/uploadFile")
+    @RequestMapping("/getAllBucket")
     public String getAllBucket() throws Exception {
         return fileService.getAllBucket().toString();
+    }
+
+    @RequestMapping("/getUrl")
+    public String getUrl(String bucketName, String objectName) throws Exception {
+        return fileService.getUrl(bucketName, objectName);
+    }
+
+    @RequestMapping("/upload")
+    public String upload(String bucket, String objectName, MultipartFile file) throws Exception {
+        return fileService.upload(bucket, objectName, file);
+    }
+
+    @RequestMapping("/downloadFile")
+    public String downloadFile(String bucket, String objectName) throws Exception {
+        return fileService.downloadFile(bucket, objectName);
     }
 
 }

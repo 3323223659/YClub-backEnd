@@ -6,24 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="club-subject-starter" />
-        <module name="club-subject-application-mq" />
-        <module name="club-subject-application-job" />
-        <module name="club-auth-domain" />
-        <module name="club-auth-application-controller" />
-        <module name="club-subject-domain" />
         <module name="club-wx" />
-        <module name="club-auth-application-job" />
         <module name="club-gateway" />
         <module name="club-oss" />
-        <module name="club-auth-infra" />
-        <module name="club-subject-api" />
-        <module name="club-subject-application-controller" />
-        <module name="club-auth-api" />
-        <module name="club-auth-starter" />
-        <module name="club-auth-application-mq" />
         <module name="club-common" />
-        <module name="club-subject-infra" />
       </profile>
       <profile name="Annotation profile for club-subject" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -32,13 +18,39 @@
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/../../../../develop/repository/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
         </processorPath>
-        <module name="club-auth-common" />
+        <module name="club-subject-infra" />
+      </profile>
+      <profile name="Annotation profile for club-auth" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$PROJECT_DIR$/../../../../develop/repository/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
+          <entry name="$PROJECT_DIR$/../../../../develop/repository/org/mapstruct/mapstruct-processor/1.4.2.Final/mapstruct-processor-1.4.2.Final.jar" />
+          <entry name="$PROJECT_DIR$/../../../../develop/repository/org/mapstruct/mapstruct/1.4.2.Final/mapstruct-1.4.2.Final.jar" />
+        </processorPath>
+        <module name="club-subject-starter" />
+        <module name="club-subject-application-mq" />
         <module name="club-subject-common" />
+        <module name="club-subject-application-job" />
+        <module name="club-auth-domain" />
+        <module name="club-auth-application-controller" />
+        <module name="club-subject-domain" />
+        <module name="club-auth-application-job" />
+        <module name="club-auth-infra" />
+        <module name="club-subject-api" />
+        <module name="club-subject-application-controller" />
+        <module name="club-auth-api" />
+        <module name="club-auth-starter" />
+        <module name="club-auth-application-mq" />
+        <module name="club-auth-common" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="8">
-      <module name="club-auth-application-infra" target="1.8" />
-      <module name="club-auth-application-starter" target="1.8" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="8" />
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="club-auth-common" options="" />
+    </option>
   </component>
 </project>

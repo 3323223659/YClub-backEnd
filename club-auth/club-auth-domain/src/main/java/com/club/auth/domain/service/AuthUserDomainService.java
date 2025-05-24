@@ -1,4 +1,5 @@
 package com.club.auth.domain.service;
+import cn.dev33.satoken.stp.SaTokenInfo;
 import com.club.auth.domain.entity.AuthUserBO;
 
 /**
@@ -16,4 +17,8 @@ public interface AuthUserDomainService {
     Boolean update(AuthUserBO authUserBO);
 
     Boolean delete(AuthUserBO authUserBO);
+
+    SaTokenInfo doLogin(String validCode);
+
+    AuthUserBO getUserInfo(AuthUserBO authUserBO);
 }

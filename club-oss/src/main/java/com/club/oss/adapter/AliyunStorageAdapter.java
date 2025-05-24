@@ -24,6 +24,11 @@ public class AliyunStorageAdapter implements StorageAdapter {
     }
 
     @Override
+    public String getUrl(String bucket, String objectName) {
+        return null;
+    }
+
+    @Override
     public void uploadFile(String bucket, String objectName, MultipartFile file) {
 
     }
@@ -43,7 +48,7 @@ public class AliyunStorageAdapter implements StorageAdapter {
     }
 
     @Override
-    public InputStream downloadFile(String bucket, String objectName) {
+    public String downloadFile(String bucket, String objectName) {
         return null;
     }
 

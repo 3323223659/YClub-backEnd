@@ -1,6 +1,8 @@
 package com.club.subject.application.controller;
 
 import com.club.subject.application.convert.SubjectCategoryDTOConverter;
+import com.club.subject.application.convert.SubjectInfoDTOConverter;
+import com.club.subject.application.convert.SubjectLabelDTOConverter;
 import com.club.subject.application.dto.SubjectCategoryDTO;
 import com.club.subject.common.entity.Result;
 import com.club.subject.entity.SubjectCategoryBO;
@@ -11,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -120,6 +123,31 @@ public class SubjectCategoryController {
         } catch (Exception e) {
             log.error("删除分类：{}", e.getMessage(),e);
             return Result.fail("删除分类失败：" + e);
+        }
+    }
+
+    @PostMapping("/queryCategoryAndLabel")
+    public Result queryCategoryAndLabel(@RequestBody SubjectCategoryDTO subjectCategoryDTO){
+        try {
+            if (log.isInfoEnabled()){
+                log.info("一次性查询分类及标签入参：{}", subjectCategoryDTO);
+            }
+
+            Preconditions.checkNotNull(subjectCategoryDTO.getId(),"分类ID不能为空");
+
+            SubjectCategoryBO subjectCategoryBO = SubjectCategoryDTOConverter.INSTANCE.convertDtoToCategoryBo(subjectCategoryDTO);
+            List<SubjectCategoryBO> subjectCategoryBOList  = subjectCategoryDomainService.queryCategoryAndLabel(subjectCategoryBO);
+
+            List<SubjectCategoryDTO> subjectCategoryDTOList = new LinkedList<>();
+            subjectCategoryBOList.forEach(categoryBO -> {
+                SubjectCategoryDTO categoryDTO = SubjectCategoryDTOConverter.INSTANCE.convertBoToCategoryDTO(categoryBO);
+                categoryDTO.setLabelDTOList(SubjectLabelDTOConverter.INSTANCE.convertBOToLabelDTOList(categoryBO.getLabelBOList()));
+                subjectCategoryDTOList.add(categoryDTO);
+            });
+            return Result.ok(subjectCategoryDTOList);
+        } catch (Exception e) {
+            log.error("一次性查询分类及标签：{}", e.getMessage(),e);
+            return Result.fail("一次性查询分类及标签失败：" + e);
         }
     }
 

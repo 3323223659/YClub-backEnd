@@ -1,6 +1,8 @@
 package com.club.auth.domain.service.impl;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.dev33.satoken.stp.StpUtil;
 import com.club.auth.common.enums.AuthUserStatusEnum;
 import com.club.auth.common.enums.IsDeletedEnum;
 import com.club.auth.domain.constant.AuthConstant;
@@ -13,6 +15,7 @@ import com.club.auth.infra.basic.service.*;
 import com.google.gson.Gson;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,13 +52,21 @@ public class AuthUserDomainServiceImpl implements AuthUserDomainService {
     private String salt = "yang";
     private String authPrefixPermission = "auth.permission";
     private String authRolePrefix = "auth.role";
+    private static final String LOGIN_PREFIX = "loginCode";
 
     @Override
     @SneakyThrows
     @Transactional(rollbackFor = Exception.class) //开启事务
     public Boolean add(AuthUserBO authUserBO) {
-        AuthUser authUser = AuthUserConverter.INSTANCE.convertBOToEntity(authUserBO);
+        //校验用户是否存在
+        AuthUser existAuthUser = new AuthUser();
+        existAuthUser.setUserName(authUserBO.getUserName());
+        List<AuthUser> authUserList = authUserService.queryByCondition(existAuthUser);
+        if (!authUserList.isEmpty()){
+            return true;
+        }
 
+        AuthUser authUser = AuthUserConverter.INSTANCE.convertBOToEntity(authUserBO);
         //这是非对称加密需要公钥加密私钥解密,数据库密码字段需要长一点
 //        HashMap<String, String> keyMap = SaSecureUtil.rsaGenerateKeyPair();
 //        String privateKey = keyMap.get("private");club
@@ -64,8 +75,11 @@ public class AuthUserDomainServiceImpl implements AuthUserDomainService {
 //        String secret = SaSecureUtil.rsaEncryptByPrivate(privateKey, authUser.getPassword());
 //        System.out.println(secret);
 
-        //该项目用md5配合加盐加密进行密码加密
-        authUser.setPassword(SaSecureUtil.md5BySalt(authUser.getPassword(),salt));
+        //微信登录时没有密码一说
+        if (StringUtils.isNotBlank(authUser.getPassword())){
+            //该项目用md5配合加盐加密进行密码加密
+            authUser.setPassword(SaSecureUtil.md5BySalt(authUser.getPassword(),salt));
+        }
 
         authUser.setIsDeleted(IsDeletedEnum.UN_DELETED.getCode());
         authUser.setStatus(AuthUserStatusEnum.OPEN.getCode());
@@ -119,5 +133,34 @@ public class AuthUserDomainServiceImpl implements AuthUserDomainService {
         Integer count = authUserService.update(authUser);
         //刷新当前用户的信息写入redis中
         return count > 0;
+    }
+
+    @Override
+    public SaTokenInfo doLogin(String validCode) {
+        String key = redisUtil.buildKey(LOGIN_PREFIX, validCode);
+        String openId = redisUtil.get(key);
+        if (openId == null){
+            return null;
+        }
+        AuthUserBO authUserBO = new AuthUserBO();
+        authUserBO.setUserName(openId);
+        this.add(authUserBO);
+        StpUtil.login(openId);
+        SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+
+        return tokenInfo;
+    }
+
+    @Override
+    public AuthUserBO getUserInfo(AuthUserBO authUserBO) {
+        AuthUser authUser = new AuthUser();
+        authUser.setUserName(authUserBO.getUserName());
+        List<AuthUser> authUserList = authUserService.queryByCondition(authUser);
+        if (authUserList.isEmpty()){
+            return new AuthUserBO();
+        }
+        AuthUser userInfo = authUserList.get(0);
+        AuthUserBO userInfoBO = AuthUserConverter.INSTANCE.convertEntityToBO(userInfo);
+        return userInfoBO;
     }
 }
